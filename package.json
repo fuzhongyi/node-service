@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "deploy": "pm2 deploy ecosystem.config.js production"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
